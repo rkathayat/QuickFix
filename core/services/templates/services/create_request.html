@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Service Request{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Create New Service Request</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.service_type.label_tag }}
+                {{ form.service_type }}
+                {% if form.service_type.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.service_type.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.description.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    {{ form.scheduled_time.label_tag }}
+                    {{ form.scheduled_time }}
+                    {% if form.scheduled_time.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.scheduled_time.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {{ form.estimated_duration.label_tag }}
+                    <div class="input-group">
+                        {{ form.estimated_duration }}
+                        <span class="input-group-text">hours</span>
+                    </div>
+                    {% if form.estimated_duration.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.estimated_duration.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                {{ form.address.label_tag }}
+                {{ form.address }}
+                {% if form.address.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.address.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add datetime picker functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr('#id_scheduled_time', {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today"
+        });
+    });
+</script>
+{% endblock %}

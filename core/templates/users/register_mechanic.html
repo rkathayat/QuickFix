@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Register as Mechanic | QuickFix{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="auth-card card animate-fade-in">
+                <div class="auth-header text-center">
+                    <h3><i class="fas fa-user-tie me-2"></i> Mechanic Registration</h3>
+                    <p class="mb-0">Join our network of professional mechanics</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <h5 class="mb-3 text-primary">Basic Information</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="id_username" class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    {{ form.username }}
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="id_email" class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    {{ form.email }}
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="id_password1" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    {{ form.password1 }}
+                                </div>
+                                <div class="form-text">At least 8 characters with numbers and letters</div>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password1.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="id_password2" class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    {{ form.password2 }}
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.password2.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3 text-primary">Professional Information</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="id_years_of_experience" class="form-label">Years of Experience</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                                    {{ form.years_of_experience }}
+                                </div>
+                                {% if form.years_of_experience.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.years_of_experience.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="id_hourly_rate" class="form-label">Hourly Rate ($)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                    {{ form.hourly_rate }}
+                                </div>
+                                {% if form.hourly_rate.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.hourly_rate.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="id_certification" class="form-label">Certification (Optional)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-certificate"></i></span>
+                                    {{ form.certification }}
+                                </div>
+                                {% if form.certification.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.certification.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-12">
+                                <label class="form-label">Specialties</label>
+                                <div class="row">
+                                    {% for specialty in form.specialties %}
+                                        <div class="col-md-4 mb-2">
+                                            <div class="form-check">
+                                                {{ specialty.tag }}
+                                                <label class="form-check-label" for="{{ specialty.id_for_label }}">
+                                                    <i class="fas 
+                                                        {% if specialty.choice_label == 'Plumbing' %}fa-faucet
+                                                        {% elif specialty.choice_label == 'Electrical' %}fa-bolt
+                                                        {% elif specialty.choice_label == 'HVAC' %}fa-wind
+                                                        {% else %}fa-cog
+                                                        {% endif %} me-1"></i>
+                                                    {{ specialty.choice_label }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3 text-primary">Contact Information</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="id_phone_number" class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    {{ form.phone_number }}
+                                </div>
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.phone_number.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="id_address" class="form-label">Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    {{ form.address }}
+                                </div>
+                                {% if form.address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" class="text-decoration-none">Terms</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            </label>
+                            <div class="invalid-feedback">
+                                You must agree before submitting.
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i> Register as Mechanic
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3">
+                    Already have an account?
+                    <a href="{% url 'login' %}" class="text-primary text-decoration-none">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

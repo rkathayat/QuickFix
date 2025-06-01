@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Mechanic Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Available Service Requests</h2>
+        <div class="list-group mb-4">
+            {% for request in new_requests %}
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ request.get_service_type_display }}</h5>
+                    <small>{{ request.customer.user.username }}</small>
+                </div>
+                <p class="mb-1">{{ request.description|truncatechars:100 }}</p>
+                <small>Scheduled: {{ request.scheduled_time|date:"M d, Y H:i" }}</small>
+                <div class="mt-2">
+                    <a href="{% url 'service_request_detail' pk=request.pk %}" class="btn btn-sm btn-outline-primary me-2">View Details</a>
+                    <form method="post" action="{% url 'accept_request' pk=request.pk %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">Accept Request</button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="alert alert-info">No new service requests available</div>
+            {% endfor %}
+        </div>
+
+        <h2>Your Active Jobs</h2>
+        <div class="list-group mb-4">
+            {% for request in active_requests %}
+            <a href="{% url 'service_request_detail' pk=request.pk %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ request.get_service_type_display }}</h5>
+                    <span class="badge bg-{% if request.status == 'accepted' %}primary{% else %}info{% endif %}">
+                        {{ request.get_status_display }}
+                    </span>
+                </div>
+                <p class="mb-1">Customer: {{ request.customer.user.username }}</p>
+                <small>Scheduled: {{ request.scheduled_time|date:"M d, Y H:i" }}</small>
+            </a>
+            {% empty %}
+            <div class="alert alert-info">No active jobs</div>
+            {% endfor %}
+        </div>
+
+        <h2>Completed Jobs</h2>
+        <div class="list-group">
+            {% for request in completed_requests %}
+            <a href="{% url 'service_request_detail' pk=request.pk %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ request.get_service_type_display }}</h5>
+                    <span class="badge bg-success">Completed</span>
+                </div>
+                <p class="mb-1">Customer: {{ request.customer.user.username }}</p>
+                <small>Completed on: {{ request.created_at|date:"M d, Y" }}</small>
+                <div class="mt-2">
+                    <span class="badge bg-light text-dark">Earned: ${{ request.final_cost|default:"0.00" }}</span>
+                </div>
+            </a>
+            {% empty %}
+            <div class="alert alert-info">No completed jobs yet</div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Your Profile</h5>
+                <p class="card-text">
+                    <strong>Specialties:</strong>
+                    {% for specialty in user.mechanic.specialties.all %}
+                        <span class="badge bg-info">{{ specialty.name }}</span>
+                    {% endfor %}
+                </p>
+                <p class="card-text"><strong>Hourly Rate:</strong> ${{ user.mechanic.hourly_rate }}</p>
+                <p class="card-text"><strong>Rating:</strong> 
+                    {% if user.mechanic.rating %}
+                        {{ user.mechanic.rating }}/5.0
+                    {% else %}
+                        No ratings yet
+                    {% endif %}
+                </p>
+                <a href="#" class="btn btn-outline-primary w-100">Edit Profile</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Quick Stats</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Active Jobs
+                        <span class="badge bg-primary rounded-pill">{{ active_requests.count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Completed Jobs
+                        <span class="badge bg-success rounded-pill">{{ completed_requests.count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Earnings
+                        <span>${{ total_earnings|default:"0.00" }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

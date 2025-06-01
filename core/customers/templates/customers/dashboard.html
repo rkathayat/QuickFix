@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Active Service Requests</h2>
+        <div class="list-group mb-4">
+            {% for request in active_requests %}
+            <a href="{% url 'service_request_detail' pk=request.pk %}" 
+               class="list-group-item list-group-item-action {% if request.status == 'pending' %}list-group-item-warning{% elif request.status == 'accepted' %}list-group-item-primary{% else %}list-group-item-info{% endif %}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ request.get_service_type_display }}</h5>
+                    <small>{{ request.get_status_display }}</small>
+                </div>
+                <p class="mb-1">Scheduled: {{ request.scheduled_time|date:"M d, Y H:i" }}</p>
+                <small>Mechanic: {% if request.mechanic %}{{ request.mechanic.user.get_full_name|default:request.mechanic.user.username }}{% else %}Not assigned yet{% endif %}</small>
+            </a>
+            {% empty %}
+            <div class="alert alert-info">No active service requests</div>
+            {% endfor %}
+        </div>
+
+        <h2>Past Service Requests</h2>
+        <div class="list-group">
+            {% for request in past_requests %}
+            <a href="{% url 'service_request_detail' pk=request.pk %}" 
+               class="list-group-item list-group-item-action {% if request.status == 'completed' %}list-group-item-success{% else %}list-group-item-secondary{% endif %}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ request.get_service_type_display }}</h5>
+                    <small>{{ request.get_status_display }}</small>
+                </div>
+                <p class="mb-1">Completed: {{ request.created_at|date:"M d, Y" }}</p>
+                <small>Mechanic: {{ request.mechanic.user.get_full_name|default:request.mechanic.user.username }}</small>
+            </a>
+            {% empty %}
+            <div class="alert alert-info">No past service requests</div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <a href="{% url 'create_service_request' %}" class="btn btn-primary w-100 mb-2">Create New Request</a>
+                <a href="#" class="btn btn-outline-secondary w-100">View Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
